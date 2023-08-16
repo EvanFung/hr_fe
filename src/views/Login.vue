@@ -25,11 +25,11 @@ export default {
             rules: {
                 username: [
                     { required: true, message: 'Please input username', trigger: 'blur' },
-                    { min: 3, max: 10, message: 'username must be between 3 and 10 characters', trigger: 'blur' }
+                    // { min: 3, max: 10, message: 'username must be between 3 and 10 characters', trigger: 'blur' }
                 ],
                 password: [
                     { required: true, message: 'Please input password', trigger: 'blur' },
-                    { min: 6, max: 10, message: 'password must be between 6 and 10 characters', trigger: 'blur' }
+                    // { min: 6, max: 10, message: 'password must be between 6 and 10 characters', trigger: 'blur' }
                 ]
             },
             loginForm: {
@@ -43,7 +43,12 @@ export default {
         submitLogin() {
             this.$refs['loginForm'].validate((valid) => {
                 if (valid) {
-                    this.$router.push({ path: '/home' })
+                    this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+                        if (resp) {
+                            window.sessionStorage.setItem('user', JSON.stringify(resp));
+                            this.$router.replace('home')
+                        }
+                    });
                 } else {
                     this.$message.error('Please input username and password')
                     return false
