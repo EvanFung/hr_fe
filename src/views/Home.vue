@@ -19,8 +19,23 @@
                 </div>
             </el-header>
             <el-container>
-                <el-aside width="200px">aside</el-aside>
-                <el-main>Main</el-main>
+                <el-aside width="200px">
+                    <el-menu @select="menuClick" unique-opened>
+                        <el-submenu :index="index + ''" v-for="(item, index) in this.routes" v-if="!item.hidden"
+                            :key="index">
+                            <template slot="title">
+                                <i :class="item.iconCls"></i>
+                                <span>{{ item.name }}</span>
+                            </template>
+                            <el-menu-item :index="child.path" v-for="(child, index) in item.children" :key="child.path">
+                                {{ child.name }}
+                            </el-menu-item>
+                        </el-submenu>
+                    </el-menu>
+                </el-aside>
+                <el-main>
+                    <router-view />
+                </el-main>
             </el-container>
         </el-container>
     </div>
@@ -34,6 +49,11 @@ export default {
             user: JSON.parse(window.sessionStorage.getItem('user'))
         }
     },
+    computed: {
+        routes() {
+            return this.$store.state.routes;
+        }
+    },
     methods: {
         commandHandler(command) {
             if (command == 'logout') {
@@ -44,6 +64,7 @@ export default {
                 }).then(() => {
                     this.getRequest("/logout");
                     window.sessionStorage.removeItem('user');
+                    this.$store.commit('initRoutes', []);
                     this.$router.replace('/');
                 }).catch(() => {
                     this.$message({
@@ -52,6 +73,9 @@ export default {
                     });
                 });
             }
+        },
+        menuClick(index) {
+            this.$router.push(index);
         }
     }
 }

@@ -8,7 +8,9 @@ import { postKeyValueRequest } from './utils/api.js';
 import { putRequest } from './utils/api.js';
 import { getRequest } from './utils/api.js';
 import { deleteRequest } from './utils/api.js';
-
+import store from './store'
+import { initMenu } from './utils/menus.js';
+import 'font-awesome/css/font-awesome.min.css'
 //global variable
 Vue.prototype.postRequest = postRequest;
 Vue.prototype.postKeyValueRequest = postKeyValueRequest;
@@ -19,8 +21,20 @@ Vue.prototype.deleteRequest = deleteRequest;
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
+router.beforeEach((to, from, next) => {
+  console.log("to.path: " + to.path);
+  console.log("from.path: " + from.path);
+  if (to.path == '/') {
+    next();
+  } else {
+    initMenu(router, store);
+    next();
+  }
+})
+
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
