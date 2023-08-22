@@ -8,7 +8,7 @@
             </el-form-item>
             <el-form-item label="password" prop="password">
                 <el-input type="password" v-model="loginForm.password" auto-complete="off"
-                    placeholder="Please enter password"></el-input>
+                    placeholder="Please enter password" @keydown.enter.native="submitLogin"></el-input>
             </el-form-item>
             <el-checkbox class="login-remember" v-model="checked"></el-checkbox>
             <el-button type="primary" style="width:100%;" @click="submitLogin">
@@ -46,7 +46,8 @@ export default {
                     this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
                         if (resp) {
                             window.sessionStorage.setItem('user', JSON.stringify(resp));
-                            this.$router.replace('home')
+                            let path = this.$route.query.redirect;
+                            this.$router.replace((path == '/' || path == undefined) ? '/home' : path);
                         }
                     });
                 } else {

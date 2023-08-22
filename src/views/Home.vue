@@ -24,7 +24,7 @@
                         <el-submenu :index="index + ''" v-for="(item, index) in this.routes" v-if="!item.hidden"
                             :key="index">
                             <template slot="title">
-                                <i :class="item.iconCls"></i>
+                                <i :class="item.iconCls" style="color:#409eff;margin-right:5px;"></i>
                                 <span>{{ item.name }}</span>
                             </template>
                             <el-menu-item :index="child.path" v-for="(child, index) in item.children" :key="child.path">
@@ -34,6 +34,13 @@
                     </el-menu>
                 </el-aside>
                 <el-main>
+                    <el-breadcrumb separator-class="el-icon-arrow-right" v-if="this.$router.currentRoute.path != '/home'">
+                        <el-breadcrumb-item :to="{ path: '/home' }">Home</el-breadcrumb-item>
+                        <el-breadcrumb-item>{{ this.$router.currentRoute.name }}</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <div v-if="this.$router.currentRoute.path == '/home'">
+                        Welcome to HR Management System
+                    </div>
                     <router-view />
                 </el-main>
             </el-container>
@@ -75,7 +82,7 @@ export default {
             }
         },
         menuClick(index) {
-            this.$router.push(index);
+            this.$router.push(index).catch(() => { });;
         }
     }
 }
