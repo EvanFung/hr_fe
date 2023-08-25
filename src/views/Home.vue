@@ -19,7 +19,7 @@
                 </div>
             </el-header>
             <el-container>
-                <el-aside width="200px">
+                <el-aside width="200px" class="aside-menu">
                     <el-menu @select="menuClick" unique-opened>
                         <el-submenu :index="index + ''" v-for="(item, index) in this.routes" v-if="!item.hidden"
                             :key="index">
@@ -41,7 +41,7 @@
                     <div v-if="this.$router.currentRoute.path == '/home'">
                         Welcome to HR Management System
                     </div>
-                    <router-view />
+                    <router-view class="home-route-view" />
                 </el-main>
             </el-container>
         </el-container>
@@ -120,5 +120,17 @@ export default {
 .el-dropdown-link {
     display: flex;
     align-items: center;
+}
+
+.home-route-view {
+    margin-top: 15px;
+}
+
+.aside-menu {
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 15px;
+    height: 100%;
+    overflow: auto;
 }
 </style>

@@ -28,10 +28,10 @@ router.beforeEach((to, from, next) => {
     next();
   } else {
     if (window.sessionStorage.getItem("user")) {
+      console.log('initMenu')
       initMenu(router, store);
       next();
     } else {
-
       next('/?redirect=' + to.path);
     }
   }
