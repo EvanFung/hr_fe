@@ -30,7 +30,7 @@ export default {
     name: 'SysBasic',
     data() {
         return {
-            activeName: 'first'
+            activeName: 'third'
         }
     },
     components: {
