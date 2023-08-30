@@ -6,12 +6,12 @@
             </el-input>
             <el-input size="small" placeholder="Please input role in Chinese" v-model="role.nameZh">
             </el-input>
-            <el-button type="primary" size="small" icon="el-icon-plus">
+            <el-button type="primary" size="small" icon="el-icon-plus" @click="doAddRole">
                 添加角色
             </el-button>
         </div>
         <div>
-            <el-collapse accordion class="permission-mgmt-collapse" @change="change">
+            <el-collapse accordion class="permission-mgmt-collapse" @change="change" v-model="activeName">
                 <el-collapse-item :title="r.nameZh" :name="r.id" v-for="(r, index) in roles" :key="index">
                     <el-card class="box-card">
                         <div slot="header" class="clearfix">
@@ -21,12 +21,12 @@
                         </div>
                         <div>
                             <div>
-                                <el-tree show-checkbox node-key="id" ref="tree" :key="index" :data="allmenus"
-                                    :props="defaultProps"></el-tree>
+                                <el-tree show-checkbox node-key="id" ref="tree" :key="index"
+                                    :default-checked-keys="selectedMenus" :data="allmenus" :props="defaultProps"></el-tree>
                             </div>
                             <div style="display: flex;justify-content: flex-end">
                                 <el-button>取消修改</el-button>
-                                <el-button type="primary">确认修改</el-button>
+                                <el-button type="primary" @click="doUpdate(r.id, index)">确认修改</el-button>
                             </div>
                         </div>
                     </el-card>
@@ -41,7 +41,7 @@ export default {
     name: 'PermissMana',
     data() {
         return {
-            activeName: '1',
+            activeName: -1,
             role: {
                 name: '',
                 nameZh: '',
@@ -51,7 +51,8 @@ export default {
             defaultProps: {
                 children: 'children',
                 label: 'name'
-            }
+            },
+            selectedMenus: [],
         }
     },
     mounted() {
@@ -65,15 +66,50 @@ export default {
                 }
             })
         },
-        change(name) {
-            if (name) {
+        change(rid) {
+            if (rid) {
                 this.initAllMenu();
+                this.initSelectedMenu(rid);
             }
         },
         initAllMenu() {
             this.getRequest("/system/basic/permiss/menus").then(resp => {
                 if (resp) {
                     this.allmenus = resp;
+                }
+            });
+        },
+        initSelectedMenu(rid) {
+            this.getRequest("/system/basic/permiss/mids/" + rid).then(resp => {
+                if (resp) {
+                    this.selectedMenus = resp;
+                }
+            });
+        },
+        doUpdate(rid, index) {
+            let tree = this.$refs.tree[index];
+            let selectedKeys = tree.getCheckedKeys(true);
+            let url = '/system/basic/permiss/?rid=' + rid;
+            selectedKeys.forEach(item => {
+                url += "&mids=" + item;
+            });
+            this.putRequest(url).then(resp => {
+                if (resp) {
+                    // this.initRoles();
+                    this.activeName = -1;
+                }
+            });
+        },
+        doAddRole() {
+            if (this.role.name == '' || this.role.nameZh == '') {
+                this.$message.error('Please input role name and role name in Chinese');
+                return;
+            }
+            this.postRequest("/system/basic/permiss/role", this.role).then(resp => {
+                if (resp) {
+                    this.initRoles();
+                    this.role.name = '';
+                    this.role.nameZh = '';
                 }
             });
         }
