@@ -17,7 +17,7 @@
                         <div slot="header" class="clearfix">
                             <span>可访问的资源</span>
                             <el-button style="float: right; padding: 3px 0;color: #ff0000;" icon="el-icon-delete"
-                                type="text"></el-button>
+                                @click="doDelete(r.id)" type="text"></el-button>
                         </div>
                         <div>
                             <div>
@@ -25,7 +25,7 @@
                                     :default-checked-keys="selectedMenus" :data="allmenus" :props="defaultProps"></el-tree>
                             </div>
                             <div style="display: flex;justify-content: flex-end">
-                                <el-button>取消修改</el-button>
+                                <el-button @click="() => activeName = -1">取消修改</el-button>
                                 <el-button type="primary" @click="doUpdate(r.id, index)">确认修改</el-button>
                             </div>
                         </div>
@@ -111,6 +111,24 @@ export default {
                     this.role.name = '';
                     this.role.nameZh = '';
                 }
+            });
+        },
+        doDelete(rid) {
+            this.$confirm('Are you sure to delete this role?', 'Warning', {
+                confirmButtonText: 'Confirm',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                this.deleteRequest("/system/basic/permiss/role/" + rid).then(resp => {
+                    if (resp) {
+                        this.initRoles();
+                    }
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Delete canceled'
+                });
             });
         }
     }
