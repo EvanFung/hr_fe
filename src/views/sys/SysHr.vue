@@ -1,16 +1,16 @@
 <template>
     <div>
-        <div style="margin-top: 10px;display: flex;justify-content: center">
+        <div style="margin-top: 10px;display: flex;justify-content: left;">
             <el-input v-model="keywords" placeholder="通过用户名搜索用户..." prefix-icon="el-icon-search"
                 style="width: 400px;margin-right: 10px" @keydown.enter.native="doSearch"></el-input>
-            <el-button icon="el-icon-search" type="primary">搜索</el-button>
+            <el-button icon="el-icon-search" type="primary" @click="doSearch">搜索</el-button>
         </div>
         <div class="hr-container">
             <el-card class="hr-card" v-for="(hr, index) in hrs" :key="index">
                 <div slot="header" class="clearfix">
                     <span>{{ hr.name }}</span>
-                    <el-button style="float: right; padding: 3px 0;color: #e30007;" type="text"
-                        icon="el-icon-delete"></el-button>
+                    <el-button style="float: right; padding: 3px 0;color: #e30007;" type="text" icon="el-icon-delete"
+                        @click="deleteHr(hr)"></el-button>
                 </div>
                 <div>
                     <div class="img-container">
@@ -126,6 +126,27 @@ export default {
                 });
             }
         },
+        doSearch() {
+            this.initHrs();
+        },
+        deleteHr(hr) {
+            this.$confirm('This will permanently delete the HR. Continue?', 'Warning', {
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Cancel',
+                type: 'warning'
+            }).then(() => {
+                this.deleteRequest("/system/hr/" + hr.id).then(resp => {
+                    if (resp) {
+                        this.initHrs();
+                    }
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: 'Delete canceled'
+                });
+            });
+        }
     }
 }
 </script>
@@ -135,12 +156,12 @@ export default {
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
 }
 
 .hr-card {
     width: 350px;
     margin-bottom: 20px;
+    margin-right: 2rem;
 }
 
 .userface-img {

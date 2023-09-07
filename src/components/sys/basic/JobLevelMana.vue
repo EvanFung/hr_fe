@@ -12,7 +12,9 @@
             </el-button>
         </div>
         <div style="margin-top: 10px">
-            <el-table :data="jls" :border="true" size="small" style="width: 100%" @selection-change="handleSelectionChange">
+            <el-table v-loading="loading" element-loading-text="loging" element-loading-spinner="el-icon-loading"
+                element-loading-backgroun="rgba(0,0,0,0,0.8)" :data="jls" :border="true" size="small" style="width: 100%"
+                @selection-change="handleSelectionChange">
                 <el-table-column type="selection" width="55">
                 </el-table-column>
                 <el-table-column prop="id" label="编号" width="55">
@@ -90,6 +92,7 @@ export default {
     name: 'JobLevelMana',
     data() {
         return {
+            loading: false,
             jl: {
                 name: '',
                 titleLevel: '',
@@ -110,7 +113,9 @@ export default {
     },
     methods: {
         initJls() {
+            this.loading = true;
             this.getRequest("/system/basic/joblevel/").then(resp => {
+                this.loading = false;
                 if (resp) {
                     this.jls = resp;
                 }

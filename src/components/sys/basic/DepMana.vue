@@ -2,8 +2,9 @@
     <div style="width: 500px;">
         <el-input placeholder="请输入部门名称进行搜索..." prefix-icon="el-icon-search" v-model="filterText">
         </el-input>
-        <el-tree :data="deps" :props="defaultProps" :expand-on-click-node="false" :filter-node-method="filterNode"
-            ref="tree">
+        <el-tree v-loading="loading" element-loading-text="loging" element-loading-spinner="el-icon-loading"
+            element-loading-backgroun="rgba(0,0,0,0,0.8)" :data="deps" :props="defaultProps" :expand-on-click-node="false"
+            :filter-node-method="filterNode" ref="tree">
             <span class="custom-tree-node" style="display: flex;justify-content: space-between;width: 100%;"
                 slot-scope="{ node, data }">
                 <span>{{ data.name }}</span>
@@ -48,6 +49,7 @@ export default {
     name: 'DepMana',
     data() {
         return {
+            loading: false,
             deps: [],
             defaultProps: {
                 children: 'children',
@@ -75,7 +77,9 @@ export default {
             this.pname = '';
         },
         initDeps() {
+            this.loading = true;
             this.getRequest("/system/basic/department/").then(resp => {
+                this.loading = false;
                 if (resp) {
                     this.deps = resp;
                 }

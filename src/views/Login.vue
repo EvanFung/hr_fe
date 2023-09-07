@@ -1,6 +1,8 @@
 <template>
     <div>
-        <el-form :rules="rules" :model="loginForm" class="login-container" ref="loginForm">
+        <el-form :rules="rules" :model="loginForm" class="login-container" ref="loginForm" v-loading="loading"
+            element-loading-text="loging" element-loading-spinner="el-icon-loading"
+            element-loading-backgroun="rgba(0,0,0,0,0.8)">
             <h3 class="login-title">System login</h3>
             <el-form-item label="username" prop="username">
                 <el-input v-model="loginForm.username" type="text" auto-complete="off"
@@ -22,6 +24,7 @@ export default {
     name: 'Login',
     data() {
         return {
+            loading: false,
             rules: {
                 username: [
                     { required: true, message: 'Please input username', trigger: 'blur' },
@@ -43,7 +46,9 @@ export default {
         submitLogin() {
             this.$refs['loginForm'].validate((valid) => {
                 if (valid) {
+                    this.loading = true;
                     this.postKeyValueRequest('/doLogin', this.loginForm).then(resp => {
+                        this.loading = false;
                         if (resp) {
                             window.sessionStorage.setItem('user', JSON.stringify(resp));
                             let path = this.$route.query.redirect;
