@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <div class="img-container">
-                        <img :src="hr.userface" :alt="hr.name" :title="hr.name" class="userface-img">
+                        <img :src="hr.userface" :alt="hr.name" :title="hr.name" class="userface-img" />
                     </div>
                     <div class="userinfo-container">
                         <div>用户名：{{ hr.name }}</div>

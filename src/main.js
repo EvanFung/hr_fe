@@ -11,6 +11,8 @@ import { deleteRequest } from './utils/api.js';
 import store from './store'
 import { initMenu } from './utils/menus.js';
 import 'font-awesome/css/font-awesome.min.css'
+import locale from 'element-ui/lib/locale/lang/en'
+
 //global variable
 Vue.prototype.postRequest = postRequest;
 Vue.prototype.postKeyValueRequest = postKeyValueRequest;
@@ -18,7 +20,7 @@ Vue.prototype.putRequest = putRequest;
 Vue.prototype.getRequest = getRequest;
 Vue.prototype.deleteRequest = deleteRequest;
 Vue.config.productionTip = false
-Vue.use(ElementUI, { size: 'small' });
+Vue.use(ElementUI, { size: 'small', locale });
 
 router.beforeEach((to, from, next) => {
   console.log("to.path: " + to.path);
